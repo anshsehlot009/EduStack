@@ -1,10 +1,9 @@
  const {Router}= require ("express");
  const adminRoutes= Router();
  const jwt = require("jsonwebtoken");
-const JWT_ADMIN_PASSWORD ="123456tgfvbhjkl,";
-
- const {adminModel}=require("../db")
-
+ const {adminModel, courseModel}=require("../db")
+const {JWT_ADMIN_PASSWORD}= require("../config");
+const { adminMiddleWare } = require("../middlewares/admin");
  // bycrypt , zod , jwt
 
 
@@ -40,6 +39,7 @@ const JWT_ADMIN_PASSWORD ="123456tgfvbhjkl,";
         });
     }
 });
+
 adminRoutes.post("/adminsignin",async function (req, res)  {
 try{
     const{email, password} = req.body;
@@ -70,19 +70,50 @@ try{
     });
 }
 });
-   
-
-adminRoutes.post("/createcourse", function (req, res)  {
-    res.json({ message: "createcourse  endpoint" });
+adminRoutes.post("/course", adminMiddleWare, async function (req, res)  {
+const adminId= req.userId;
+const{ title , description,imageURL,price}= req.body;
+const course= await courseModel.create({
+    title:title,
+    description:description,
+    imageURL:imageURL,
+    price:price,
+    Creater_id: adminId
+})
+res.json({
+    message:"course created",
+    courseId: course._id
+})
 });
-adminRoutes.put("/course", function (req, res)  {
-    res.json({ message: "delete course  endpoint" });
-});
-adminRoutes.post("/addcourse", function (req, res)  {
-    res.json({ message: "add course  endpoint" });
-});
+adminRoutes.put("/course",  async function (req, res)  {
+    const adminId= req.userId;
+const{ title , description,imageURL,price,courseId}= req.body;
 
-
+const course= await courseModel.updateOne({
+_id: courseId,
+Creater_id: adminId
+},
+    {
+    title:title,
+    description:description,
+    imageURL:imageURL,
+    price:price,
+})
+res.json({
+    message:"course updated ",
+    courseId: course._id
+})
+});
+adminRoutes.get("/course/bulk", adminMiddleWare, async function (req, res)  {
+    const adminId= req.userId;
+    const courses= await courseModel.find({
+   Creater_id:adminId
+    })
+    res.json({
+        message:"course updated ",
+        courses
+    })
+    });
 module.exports={
     adminRoutes:adminRoutes
 }

@@ -1,3 +1,6 @@
+require('dotenv').config();
+console.log(process.env.MONGO_URL);
+
 const express=require("express");
 const mongoose= require("mongoose");
  const app = express();
@@ -13,7 +16,7 @@ app.use(express.json());
    app.use("/v1/admin",adminRoutes)
 
    async function main() {
-    await mongoose.connect("mongodb+srv://anshsehlot01:J0nZt4kwOji4GwC9@cluster0.tcq2fcq.mongodb.net/coursera-app");
+    await mongoose.connect(process.env.MONGO_URL);
     app.listen(3000);   
     console.log("listening on the port");
     
