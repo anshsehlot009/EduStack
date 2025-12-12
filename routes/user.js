@@ -27,7 +27,7 @@ userRouter.post("/signup", async function(req, res) {
 
         res.json({ message: "signup succeeded" });
     } catch(error) {
-        // Handle duplicate email error
+    
         if (error.code === 11000) {
             return res.status(409).json({ 
                 message: "Email already exists" 
@@ -52,7 +52,7 @@ userRouter.post("/signin", async function (req, res) {
             });
         }
 
-        // FIX: Use user._id
+        
         const token = jwt.sign(
             { id: user._id },
             JWT_USER_PASSWORD
