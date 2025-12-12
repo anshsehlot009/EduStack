@@ -18,6 +18,7 @@
     "jason": "^2.0.0",
     "json": "^11.0.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.0.0"
+    "mongoose": "^9.0.0",
+    "nodemon": "^3.1.11"
   }
 }
